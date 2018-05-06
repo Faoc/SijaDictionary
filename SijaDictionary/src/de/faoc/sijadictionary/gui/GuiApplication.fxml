@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.faoc.sijadictionary.gui.GuiApplicationController">
+   <top>
+      <HBox fx:id="toolbar" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="35.0" prefHeight="35.0" BorderPane.alignment="CENTER" />
+   </top>
+   <center>
+      <ScrollPane fx:id="center" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
