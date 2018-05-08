@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,16 +19,31 @@ public class DatabaseHelper {
 	public static final String DB_FILE = "sijadictionary.db";
 	public static final String DB_URL = DB_PREFIX + DB_PATH + DB_FILE;
 	
-	private static final String CREATE_TABLES_RES = "sql/create_tables.sql";
+	private static final String CREATE_TABLES_RES = "/sql/create_tables.sql";
 
 	private static Connection connection;
 
 	public static Connection getConnection() {
-		if (connection == null) {
+		if (connection != null) {
 			return connection;
 		} else {
 			connect();
 			return connection;
+		}
+	}
+	
+	private static void connect() {
+		try {
+			// init the subfolder
+			Files.createDirectories(Paths.get(DB_PATH));
+			// create a connection to the database
+			connection = DriverManager.getConnection(DB_URL);
+
+			System.out.println("Connection to SQLite has been established.");
+
+		} catch (SQLException | IOException e) {
+			System.out.println("Connection to SQLite database failed.");
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -68,20 +85,12 @@ public class DatabaseHelper {
 	}
 
 	public static void initDatabase() {
+		System.out.println("Initializing DB");
+		
 		executeResStatement(CREATE_TABLES_RES);
-	}
-
-	private static void connect() {
-		try {
-			// create a connection to the database
-			connection = DriverManager.getConnection(DB_URL);
-
-			System.out.println("Connection to SQLite has been established.");
-
-		} catch (SQLException e) {
-			System.out.println("Connection to SQLite database failed.");
-			System.out.println(e.getMessage());
-		}
+		System.out.println("Created tables");
+		
+		System.out.println("Done!");
 	}
 
 }

@@ -1,1 +1,32 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/* Define constants */
+.root{
+	-sija-background-color: white;
+	-sija-main-element-color: #e1e1e1;
+	-sija-main-hover-color: #e8e8e8;
+}
+
+/* Load external fonts 
+@font-face {
+    font-family: Delicious;
+    src: url('Delicious-Roman.otf');
+}
+
+.root{
+}
+*/
+
+.main-display{
+	-fx-background-color: white;
+}
+
+.button{
+	-fx-cursor: hand;
+	-fx-background-color: -sija-main-element-color;
+}
+.button:hover{
+	-fx-background-color: -sija-main-hover-color;
+}
+
+.main-button{
+	-fx-background-radius: 1000;
+}
