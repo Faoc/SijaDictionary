@@ -35,7 +35,4 @@ public class MainDisplay extends Display<HBox> {
 		getRoot().getChildren().addAll(dictButton, trainerButton);
 	}
 
-
-
-
 }
