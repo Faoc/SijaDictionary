@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -18,7 +19,7 @@ public class DatabaseHelper {
 	public static final String DB_PATH = "db/";
 	public static final String DB_FILE = "sijadictionary.db";
 	public static final String DB_URL = DB_PREFIX + DB_PATH + DB_FILE;
-	
+
 	private static final String CREATE_TABLES_RES = "/sql/create_tables.sql";
 
 	private static Connection connection;
@@ -31,7 +32,7 @@ public class DatabaseHelper {
 			return connection;
 		}
 	}
-	
+
 	private static void connect() {
 		try {
 			// init the subfolder
@@ -54,15 +55,17 @@ public class DatabaseHelper {
 			String resourceString = resourceUrl.getFile();
 			input = new BufferedReader(new FileReader(resourceString));
 
-			String statementString = "";
+			String statementStrings = "";
 			String statementLine = null;
 			while ((statementLine = input.readLine()) != null) {
-				statementString += statementLine;
+				statementStrings += statementLine;
 			}
-
-			Statement stmt;
-			stmt = getConnection().createStatement();
-			stmt.execute(statementString);
+			
+			// Split statements and execute
+			for(String statementString : statementStrings.split(";")) {
+				Statement stmt = getConnection().createStatement();
+				stmt.execute(statementStrings);
+			}
 			return true;
 		} catch (IOException e) {
 			System.out.println("Error reading: " + statement);
@@ -84,12 +87,46 @@ public class DatabaseHelper {
 		}
 	}
 
+	public static boolean execute(String sql) {
+		try {
+			Statement stmt = getConnection().createStatement();
+			stmt.execute(sql);
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Error executing statement: " + sql);
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean executeUpdate(String sql) {
+		try {
+			Statement stmt = getConnection().createStatement();
+			return stmt.executeUpdate(sql) > 0;
+		} catch (SQLException e) {
+			System.out.println("Error executing statement: " + sql);
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static DataSet query(String sql) {
+		try {
+			Statement stmt = getConnection().createStatement();
+			return DataSet.fromResulSet(stmt.executeQuery(sql));
+		} catch (SQLException e) {
+			System.out.println("Error executing statement: " + sql);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public static void initDatabase() {
 		System.out.println("Initializing DB");
-		
+
 		executeResStatement(CREATE_TABLES_RES);
 		System.out.println("Created tables");
-		
+
 		System.out.println("Done!");
 	}
 

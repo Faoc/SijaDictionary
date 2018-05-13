@@ -1,5 +1,7 @@
 package de.faoc.sijadictionary.gui.controls;
 
+import de.faoc.sijadictionary.gui.GuiApplicationController;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
