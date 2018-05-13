@@ -120,6 +120,17 @@
 	-fx-max-height: 30px;
 }
 
+.unit-name {
+	-fx-text-box-border: transparent;
+	-fx-background-color: transparent;
+	-fx-background-insets: 0;
+	-fx-padding: 1 3 1 3;
+}
+
+.unit-name:focused {
+	-fx-focus-color: transparent
+}
+
 /*
  * HeaderBar
  */
@@ -144,5 +155,40 @@
 	-fx-pref-height: 30px;
 	-fx-max-width: 30px;
 	-fx-max-height: 30px;
+}
+
+/*
+ * VocabDisplay
+ */
+.add-vocab-button {
+	-fx-background-radius: 1000;
+	-fx-text-fill: white;
+	-fx-min-width: 50px;
+	-fx-min-height: 50px;
+	-fx-pref-width: 50px;
+	-fx-pref-height: 50px;
+	-fx-max-width: 50px;
+	-fx-max-height: 50px;
+}
+
+.translation-box {
+	-fx-background-color: -sija-main-element-color;
+	-fx-background-radius: 10;
+	-fx-spacing: 5px;
+	-fx-padding: 5px;
+}
+
+.translation-text {
+	-fx-text-box-border: transparent;
+	-fx-background-color: transparent;
+	-fx-background-insets: 0;
+	-fx-padding: 1 3 1 3;
+}
+
+.translation-text :focused {
+	-fx-focus-color: transparent
+}
+
+.seperator {
 }
 

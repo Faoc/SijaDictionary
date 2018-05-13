@@ -21,7 +21,6 @@ public abstract class Display<T extends Pane>{
 		if(styleClass() != null) {
 			getRoot().getStyleClass().add(styleClass());
 		}
-		init();
 	}
 	
 	protected abstract void init();

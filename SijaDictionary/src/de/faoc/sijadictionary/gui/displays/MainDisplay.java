@@ -8,6 +8,14 @@ import javafx.scene.layout.Pane;
 
 public class MainDisplay extends Display<HBox> {
 	
+	
+	
+	public MainDisplay() {
+		super();
+		
+		init();
+	}
+
 	@Override
 	protected HBox defaultRoot() {
 		return new HBox();

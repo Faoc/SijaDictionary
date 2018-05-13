@@ -3,6 +3,7 @@ package de.faoc.sijadictionary.gui;
 import de.faoc.sijadictionary.gui.controls.HeaderBar;
 import de.faoc.sijadictionary.gui.displays.Display;
 import de.faoc.sijadictionary.gui.displays.MainDisplay;
+import de.faoc.sijadictionary.gui.displays.UnitDisplay;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
@@ -14,6 +15,7 @@ public class GuiApplicationController {
 	
 	private Display currentDiplay;
 	private HeaderBar headerBar;
+	private MainDisplay mainDisplay;
 	
     @FXML
     private HBox top;
@@ -28,7 +30,8 @@ public class GuiApplicationController {
     	center.getStyleClass().addAll("main-container");
     	
     	headerToolbar();
-    	changeDisplay(new MainDisplay());
+    	mainDisplay = new MainDisplay();
+    	changeDisplay(mainDisplay);
     }
 
 	private void headerToolbar() {
@@ -37,6 +40,13 @@ public class GuiApplicationController {
 		
 		headerBar.setBackPressedListener(event -> {
 			backPressed();
+		});
+		headerBar.setLangChangedListener(event -> {
+			if(!(currentDiplay instanceof MainDisplay)) {
+				UnitDisplay newUnitDisplay = new UnitDisplay();
+				newUnitDisplay.setPreviousDisplay(mainDisplay);
+				changeDisplay(newUnitDisplay);
+			}
 		});
 		
 		top.getChildren().add(headerBar);
