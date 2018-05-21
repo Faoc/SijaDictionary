@@ -3,6 +3,8 @@
 	-sija-background-color: white;
 	-sija-main-element-color: #e1e1e1;
 	-sija-main-hover-color: #e8e8e8;
+	-sija-nested-element-color: #e8e8e8;
+	-sija-nested-hover-color: #eeeeee;
 	-sija-green-button-color: #86e086;
 	-sija-green-button-hover-color: #90ee90;
 	-sija-red-button-color: #f1646c;
@@ -43,6 +45,11 @@
 
 .clickable {
 	-fx-cursor: hand;
+}
+
+.round {
+	-fx-background-radius: 1000;
+	-fx-border-radius: 1000;
 }
 
 .main-button {
@@ -192,3 +199,25 @@
 .seperator {
 }
 
+.translation-delete-button {
+	-fx-min-width: 15px;
+	-fx-min-height: 15px;
+	-fx-pref-width: 15px;
+	-fx-pref-height: 15px;
+	-fx-max-width: 15px;
+	-fx-max-height: 15px;
+	-fx-opacity: 0.5;
+}
+
+.translation-delete-button:hover {
+	-fx-opacity: 1;
+	-fx-background-color: transparent;
+}
+
+.translation-image-container {
+	-fx-background-color: -sija-nested-element-color;
+}
+
+.translation-image-container:hover {
+	-fx-background-color: -sija-nested-hover-color;
+}
