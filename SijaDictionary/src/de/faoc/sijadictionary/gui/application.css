@@ -214,10 +214,28 @@
 	-fx-background-color: transparent;
 }
 
-.translation-image-container {
+.translation-image-button {
 	-fx-background-color: -sija-nested-element-color;
+	-fx-min-width: 120px;
+	-fx-min-height: 120px;
+	-fx-pref-width: 120px;
+	-fx-pref-height: 120px;
+	-fx-max-width: 120px;
+	-fx-max-height: 120px;
 }
 
-.translation-image-container:hover {
+.translation-image-button:preview-mode {
+	-fx-cursor: default;
+}
+
+.translation-image-button:hover {
 	-fx-background-color: -sija-nested-hover-color;
+}
+
+.translation-image-button:drag {
+	-fx-background-color: #ffc0c0;
+}
+
+.translation-image-button:preview-mode:hover {
+	-fx-background-color: -sija-nested-element-color;
 }

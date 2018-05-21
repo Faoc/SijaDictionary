@@ -17,14 +17,14 @@ public class TranslationImageView extends ImageView {
 	private static final String IMAGE_ROOT = "img/";
 	
 	private int translationId;
-	private boolean previewMode;
 	
 	private Image image;
 	
-	public TranslationImageView(int translationId, boolean previewMode) {
+	private boolean present;
+	
+	public TranslationImageView(int translationId) {
 		super();
 		this.translationId = translationId;
-		this.previewMode = previewMode;
 		
 		init();
 	}
@@ -33,7 +33,6 @@ public class TranslationImageView extends ImageView {
 		getStyleClass().addAll("translation-imageview");
 		
 		initImage();
-		
 		setImage(image);
 		
 		setPreserveRatio(true);
@@ -48,6 +47,7 @@ public class TranslationImageView extends ImageView {
 		if(imageFile.exists()) {
 			try {
 				image = new Image(new BufferedInputStream(new FileInputStream(imageFile)));
+				present = true;
 			} catch (FileNotFoundException e) {
 				System.out.println("Couln't load image " + imagePath + "!");
 				e.printStackTrace();
@@ -57,7 +57,15 @@ public class TranslationImageView extends ImageView {
 			//Load default image
 			image = Icons.getImage(Icons.IMAGE_IMAGE_PATH);
 		}
+		present = false;
 	}
-	
+
+	public int getTranslationId() {
+		return translationId;
+	}
+
+	public boolean isPresent() {
+		return present;
+	}
 	
 }

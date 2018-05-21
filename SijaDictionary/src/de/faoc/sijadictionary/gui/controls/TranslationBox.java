@@ -26,7 +26,7 @@ public class TranslationBox extends BorderPane {
 	private TextField fromTextField;
 	private TextField toTextField;
 	private Button deleteButton;
-	private ImageView imageView;
+	private TranslationImageButton imageButton;
 
 	private HBox topBox;
 	private HBox mainBox;
@@ -82,18 +82,13 @@ public class TranslationBox extends BorderPane {
 				updateTranslation();
 		});
 
-		imageView = new TranslationImageView(translationId, false);
-		imageView.setFitWidth(124);
-		VBox imageContainer = new VBox(imageView);
-		imageContainer.setAlignment(Pos.CENTER);
-		imageContainer.setPadding(new Insets(20));
-		imageContainer.getStyleClass().addAll("translation-image-container", "clickable", "round");
+		imageButton = new TranslationImageButton(translationId, false);
 
 		Label seperator = new Label("\u2014");
 		seperator.getStyleClass().addAll("seperator");
 
 		mainBox.getChildren().addAll(Space.hBoxSpace(), fromTextField, Space.hBoxSpace(), seperator, Space.hBoxSpace(),
-				toTextField, Space.hBoxSpace(), imageContainer);
+				toTextField, Space.hBoxSpace(), imageButton);
 
 	}
 
