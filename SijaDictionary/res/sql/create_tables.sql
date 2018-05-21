@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS `unit` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`fromLang`	TEXT NOT NULL,
+	`toLang`	TEXT NOT NULL,
+	`name`	TEXT NOT NULL,
+	`result` REAL NOT NULL DEFAULT 0,
+	`trials` INTEGER NOT NULL DEFAULT 0,
+	`defUnit` INTEGER NOT NULL DEFAULT 0,
+	CHECK(`result` >= 0 AND `result` <= 1 AND `trials` >= 0),
+	CHECK(`fromLang` != `toLang`)
+);
+CREATE TABLE IF NOT EXISTS `translation` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`unit`	INTEGER NOT NULL,
+	`origin`	TEXT NOT NULL,
+	`translation`	TEXT NOT NULL,
+	`picture` TEXT,
+	FOREIGN KEY(`unit`) REFERENCES `unit`(`id`) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS `synonym` (
+	`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`translation` INTEGER NOT NULL,
+	`name` TEXT NOT NULL,
+	FOREIGN KEY(`translation`) REFERENCES `translation`(`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE (`translation`, `name`)
+);

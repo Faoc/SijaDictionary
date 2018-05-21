@@ -1,0 +1,7 @@
+Most icons taken from https://www.iconfinder.com/iconsets/ionicons
+=====
+book.png https://www.iconfinder.com/icons/298731/book_icon
+checklist.png https://www.iconfinder.com/icons/298739/checklist_icon
+edit.png https://www.iconfinder.com/icons/183209/edit_pen_icon
+=====
+Flags taken from https://www.iconfinder.com/iconsets/142-mini-country-flags-16x16px
