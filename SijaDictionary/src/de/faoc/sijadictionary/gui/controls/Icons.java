@@ -12,6 +12,11 @@ public class Icons {
 	public static final String DELETE_IMAGE_PATH = "/images/delete.png";
 	public static final String EDIT_IMAGE_PATH = "/images/edit.png";
 	public static final String BACK_IMAGE_PATH = "/images/back.png";
+	public static final String IMAGE_IMAGE_PATH = "/images/image.png";
+	
+	public static Image getImage(String path) {
+		return new Image(Icons.class.getResourceAsStream(path));
+	}
 
 	public static ImageView get(String path, Integer fitWidth, Integer fitHeight) {
 		Image image = new Image(Icons.class.getResourceAsStream(path));
