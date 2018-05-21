@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.faoc.sijadictionary.Main;
+import de.faoc.sijadictionary.gui.controls.LanguageChooser;
+
 public class DatabaseHelper {
 
 	public static final String DB_PREFIX = "jdbc:sqlite:";
@@ -64,7 +67,8 @@ public class DatabaseHelper {
 			// Split statements and execute
 			for(String statementString : statementStrings.split(";")) {
 				Statement stmt = getConnection().createStatement();
-				stmt.execute(statementStrings);
+				stmt.executeUpdate(statementStrings);
+				stmt.close();
 			}
 			return true;
 		} catch (IOException e) {

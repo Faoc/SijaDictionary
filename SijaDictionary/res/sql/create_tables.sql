@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `unit` (
 	`name`	TEXT NOT NULL,
 	`result` REAL NOT NULL DEFAULT 0,
 	`trials` INTEGER NOT NULL DEFAULT 0,
+	`defUnit` INTEGER NOT NULL DEFAULT 0,
 	CHECK(`result` >= 0 AND `result` <= 1 AND `trials` >= 0),
 	CHECK(`fromLang` != `toLang`)
 );

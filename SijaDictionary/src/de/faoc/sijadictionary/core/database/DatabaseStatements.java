@@ -15,6 +15,11 @@ public class DatabaseStatements {
 					fromLang, Unit.TO_LANG, toLang);
 		}
 
+		public static String unit(String fromLang, String toLang, boolean defUnit) {
+			return String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = %d;", Unit.TABLE_NAME, Unit.FROM_LANG,
+					fromLang, Unit.TO_LANG, toLang, Unit.DEF_UNIT, defUnit ? 1 : 0);
+		}
+
 		public static String translation(int unitId) {
 			return String.format("SELECT * FROM %s WHERE %s = %d;", Translation.TABLE_NAME, Translation.UNIT, unitId);
 		}
@@ -25,6 +30,11 @@ public class DatabaseStatements {
 			return String.format("INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');", Unit.TABLE_NAME,
 					Unit.FROM_LANG, Unit.TO_LANG, Unit.NAME, fromLang, toLang, name);
 		}
+		
+		public static String unit(String fromLang, String toLang, String name, boolean defUnit) {
+			return String.format("INSERT INTO %s (%s, %s, %s, %s) VALUES ('%s', '%s', '%s', %d);", Unit.TABLE_NAME,
+					Unit.FROM_LANG, Unit.TO_LANG, Unit.NAME, Unit.DEF_UNIT, fromLang, toLang, name, defUnit ? 1 : 0);
+		}
 
 		/*
 		 * UNFINISHED
@@ -34,9 +44,8 @@ public class DatabaseStatements {
 		}
 
 		public static String translation(int unitId, String origin, String translation) {
-			return String.format("INSERT INTO %s (%s, %s, %s) VALUES (%d, '%s', '%s');",
-					Translation.TABLE_NAME, Translation.UNIT, Translation.ORIGIN, Translation.TRANSLATION,
-					unitId, origin, translation);
+			return String.format("INSERT INTO %s (%s, %s, %s) VALUES (%d, '%s', '%s');", Translation.TABLE_NAME,
+					Translation.UNIT, Translation.ORIGIN, Translation.TRANSLATION, unitId, origin, translation);
 		}
 	}
 
@@ -53,6 +62,10 @@ public class DatabaseStatements {
 	}
 
 	public static class Delete {
+		public static String unit() {
+			return String.format("DELETE FROM %s;", Unit.TABLE_NAME);
+		}
+
 		public static String unit(int id) {
 			return String.format("DELETE FROM %s WHERE %s = %d;", Unit.TABLE_NAME, Unit.ID, id);
 		}

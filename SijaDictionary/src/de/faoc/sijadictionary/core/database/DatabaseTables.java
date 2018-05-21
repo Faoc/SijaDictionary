@@ -19,7 +19,8 @@ public class DatabaseTables {
 		public static final String TO_LANG = "toLang";
 		public static final String NAME = "name";
 		public static final String RESULT = "result";
-		public static final String TRIALS = "trials";	
+		public static final String TRIALS = "trials";
+		public static final String DEF_UNIT = "defUnit";
 	}
 	
 	public class Synonym{
