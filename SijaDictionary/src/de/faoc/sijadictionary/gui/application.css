@@ -236,6 +236,10 @@
 	-fx-background-color: #ffc0c0;
 }
 
+.translation-image-button:drag > .img-view{
+	-fx-opacity: 0.5;
+}
+
 .translation-image-button:preview-mode:hover {
 	-fx-background-color: -sija-nested-element-color;
 }

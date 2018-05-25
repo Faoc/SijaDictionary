@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.value.ChangeListener;
@@ -22,10 +24,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 public class TranslationImageButton extends Button {
 
 	private double SQRT_2 = Math.sqrt(2);
+
 	private static final String IMAGE_ENDING_REGEX = "^(.+?)\\.(gif|jpe?g|tiff|png)$";
 
 	private int translationId;
@@ -46,22 +50,7 @@ public class TranslationImageButton extends Button {
 	private void init() {
 		getStyleClass().addAll("translation-image-button", "round");
 
-		imageView = new TranslationImageView(translationId);
-		maxBinding = Bindings.max(widthProperty(), heightProperty());
-		if (imageView.isPresent()) {
-			// imageView.fitWidthProperty().bind(maxBinding);
-			// imageView.fitHeightProperty().bind(maxBinding);
-
-		} else {
-			// imageView.fitWidthProperty().bind(widthProperty().divide(SQRT_2));
-			// imageView.fitHeightProperty().bind(heightProperty().divide(SQRT_2));
-		}
-
-		maxBinding.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-			fitImage();
-		});
-
-		setGraphic(imageView);
+		updateImage();
 
 		Circle circle = new Circle();
 		circle.radiusProperty().bind(widthProperty().divide(2));
@@ -76,6 +65,22 @@ public class TranslationImageButton extends Button {
 		} else {
 			initDragAndDrop();
 		}
+	}
+
+	private void updateImage() {
+		imageView = new TranslationImageView(translationId);
+		maxBinding = Bindings.max(widthProperty(), heightProperty());
+		if (imageView.isPresent()) {
+			maxBinding.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+				fitImage();
+			});
+
+		} else {
+			imageView.fitWidthProperty().bind(widthProperty().divide(SQRT_2));
+			imageView.fitHeightProperty().bind(heightProperty().divide(SQRT_2));
+		}
+
+		setGraphic(imageView);
 	}
 
 	private void fitImage() {
@@ -119,50 +124,55 @@ public class TranslationImageButton extends Button {
 	}
 
 	private Image extractDraggedImage(DragEvent event) {
+		Image image = null;
 		Dragboard dragboard = event.getDragboard();
-		List<File> draggedFiles = dragboard.getFiles();
-		if (draggedFiles != null) {
-			for (File draggedFile : dragboard.getFiles()) {
-				// Try to parse file
-				try {
-					Image image = new Image(new BufferedInputStream(new FileInputStream(draggedFile)));
-					if (!image.isError())
-						return image;
-				} catch (FileNotFoundException e) {
-				}
-			}
-		}
 
+		// Extract from file list
+		List<File> draggedFiles = dragboard.getFiles();
+		image = ImageProcessor.getFirstImageFromFileList(draggedFiles);
+		if (image != null)
+			return image;
+
+		// Extract from image
 		if (dragboard.getImage() != null && !dragboard.getImage().isError())
 			dragboard.getImage();
 
+		// Extract from text
 		// Check if String has image file-ending
 		String draggedText = dragboard.getString();
 		if (draggedText != null && !draggedText.isEmpty()) {
 			if (draggedText.matches(IMAGE_ENDING_REGEX)) {
 				// Check if valid URL
 				try {
+					FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
+					fadeTransition.setFromValue(0.8);
+					fadeTransition.setToValue(0.2);
+					fadeTransition.setAutoReverse(true);
+					fadeTransition.setCycleCount(Animation.INDEFINITE);
+					fadeTransition.play();
 					URL draggedURL = new URL(draggedText);
-					return new Image(draggedURL.toString());
+					Image urlImage = new Image(draggedURL.toString(), true);
+					urlImage.progressProperty()
+							.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+								System.out.println(newValue.doubleValue());
+								if(newValue.doubleValue() >= 1) {
+									fadeTransition.stop();
+									setOpacity(1);
+								}
+							});
+					return urlImage;
 				} catch (MalformedURLException e) {
 				}
-				// Check if file
+				// Check String is a file-path containing an image
 				File draggedFile = Paths.get(draggedText).toFile();
-				if (draggedFile != null && !draggedFile.isDirectory() && draggedFile.exists())
-					try {
-						return new Image(new BufferedInputStream(new FileInputStream(draggedFile)));
-					} catch (FileNotFoundException e) {
-					}
+				image = ImageProcessor.getImageFromFile(draggedFile);
+				if (image != null)
+					return image;
 			}
 		}
 		String draggedURLString = dragboard.getUrl();
 		if (draggedURLString != null) {
-			try {
-				URL draggedURL = new URL(draggedURLString);
-				if (draggedURLString.matches(IMAGE_ENDING_REGEX))
-					return new Image(draggedURL.toString());
-			} catch (MalformedURLException e) {
-			}
+
 		}
 
 		return null;
