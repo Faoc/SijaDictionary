@@ -24,4 +24,5 @@ hs_err_pid*
 #Specific project files
 SijaDictionary/db
 SijaDictionary/bin
+SijaDictionary/img
 !SijaDictionary/lib/*

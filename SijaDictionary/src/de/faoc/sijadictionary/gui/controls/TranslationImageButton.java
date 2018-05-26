@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import de.faoc.sijadictionary.gui.controls.URLImage.Status;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.Bindings;
@@ -18,6 +19,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.css.PseudoClass;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -28,9 +30,12 @@ import javafx.util.Duration;
 
 public class TranslationImageButton extends Button {
 
-	private double SQRT_2 = Math.sqrt(2);
-
+	private static final double SQRT_2 = Math.sqrt(2);
 	private static final String IMAGE_ENDING_REGEX = "^(.+?)\\.(gif|jpe?g|tiff|png)$";
+	private static final String IMAGE_ROOT = "img/";
+	private static final String IMAGE_SUFFIX = ".png";
+	private static final String IMAGE_FORMAT = "png";
+	private static final int IMAGE_SIZE = 380;
 
 	private int translationId;
 	private boolean previewMode;
@@ -116,66 +121,82 @@ public class TranslationImageButton extends Button {
 	}
 
 	private void processDraggedImage(DragEvent event) {
-		Image draggedImage = extractDraggedImage(event);
-		if (draggedImage != null) {
-			imageView.setImage(draggedImage);
-			fitImage();
-		}
-	}
-
-	private Image extractDraggedImage(DragEvent event) {
 		Image image = null;
 		Dragboard dragboard = event.getDragboard();
 
 		// Extract from file list
 		List<File> draggedFiles = dragboard.getFiles();
 		image = ImageProcessor.getFirstImageFromFileList(draggedFiles);
-		if (image != null)
-			return image;
+		if (image != null) {
+			saveTranslationImage(image);
+			updateImage();
+			return;
+		}
 
 		// Extract from image
-		if (dragboard.getImage() != null && !dragboard.getImage().isError())
-			dragboard.getImage();
+		if (dragboard.getImage() != null && !dragboard.getImage().isError()) {
+			saveTranslationImage(dragboard.getImage());
+			updateImage();
+			return;
+		}
+
+		// Extract from URL
+		String draggedURLString = dragboard.getUrl();
+		if (draggedURLString != null && ImageProcessor.isValidImageUrl(draggedURLString)) {
+			loadImageFromUrl(draggedURLString);
+			return;
+		}
 
 		// Extract from text
-		// Check if String has image file-ending
 		String draggedText = dragboard.getString();
 		if (draggedText != null && !draggedText.isEmpty()) {
-			if (draggedText.matches(IMAGE_ENDING_REGEX)) {
-				// Check if valid URL
-				try {
-					FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
-					fadeTransition.setFromValue(0.8);
-					fadeTransition.setToValue(0.2);
-					fadeTransition.setAutoReverse(true);
-					fadeTransition.setCycleCount(Animation.INDEFINITE);
-					fadeTransition.play();
-					URL draggedURL = new URL(draggedText);
-					Image urlImage = new Image(draggedURL.toString(), true);
-					urlImage.progressProperty()
-							.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-								System.out.println(newValue.doubleValue());
-								if(newValue.doubleValue() >= 1) {
-									fadeTransition.stop();
-									setOpacity(1);
-								}
-							});
-					return urlImage;
-				} catch (MalformedURLException e) {
-				}
-				// Check String is a file-path containing an image
-				File draggedFile = Paths.get(draggedText).toFile();
-				image = ImageProcessor.getImageFromFile(draggedFile);
-				if (image != null)
-					return image;
+			// Try to get Image if String is treated as URL
+			if (ImageProcessor.isValidImageUrl(draggedText)) {
+				loadImageFromUrl(draggedText);
+				return;
+			}
+			// Try to get Image if String is treated as file path
+			File draggedFile = Paths.get(draggedText).toFile();
+			image = ImageProcessor.getImageFromFile(draggedFile);
+			if (image != null) {
+				saveTranslationImage(image);
+				updateImage();
+				return;
 			}
 		}
-		String draggedURLString = dragboard.getUrl();
-		if (draggedURLString != null) {
+	}
 
+	private void saveTranslationImage(Image image) {
+		File targetFile = Paths.get(IMAGE_ROOT + translationId + IMAGE_SUFFIX).toFile();
+		ImageProcessor.saveImageToFile(image, targetFile, IMAGE_SIZE, IMAGE_FORMAT);
+		
+		
+	}
+
+	private void loadImageFromUrl(String urlString) {
+		URLImage urlImage = ImageProcessor.getImageFromUrl(urlString, 7000, true);
+		if (urlImage != null) {
+			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
+			fadeTransition.setFromValue(0.8);
+			fadeTransition.setToValue(0.2);
+			fadeTransition.setAutoReverse(true);
+			fadeTransition.setCycleCount(Animation.INDEFINITE);
+			fadeTransition.play();
+
+			ProgressIndicator progressIndicator = new ProgressIndicator(0);
+			progressIndicator.progressProperty().bind(urlImage.progressProperty());
+
+			setGraphic(progressIndicator);
+
+			urlImage.statusProperty().addListener((ChangeListener<Status>) (observable, oldValue, status) -> {
+				if (status == URLImage.Status.SUCCESSFUL) {
+					saveTranslationImage(urlImage);
+				}
+				fadeTransition.stop();
+				setOpacity(1);
+				updateImage();
+			});
 		}
-
-		return null;
 	}
 
 	private boolean isValidDragData(DragEvent event) {

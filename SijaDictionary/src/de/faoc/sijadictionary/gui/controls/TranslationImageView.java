@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 public class TranslationImageView extends ImageView {
 	
 	private static final String IMAGE_ROOT = "img/";
+	private static final String IMAGE_SUFFIX = ".png";
 	
 	private int translationId;
 	
@@ -41,7 +42,7 @@ public class TranslationImageView extends ImageView {
 
 	private void initImage()  {
 		//See if image is present / create path if not present
-		String imagePathString = IMAGE_ROOT + translationId + ".png";
+		String imagePathString = IMAGE_ROOT + translationId + IMAGE_SUFFIX;
 		Path imagePath = Paths.get(imagePathString);
 		File imageFile = imagePath.toFile();
 		if(imageFile.exists()) {
