@@ -13,9 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class TranslationBox extends BorderPane {
+public class TranslationBox extends StackPane {
 
 	private VocabDisplay vocabDisplay;
 
@@ -26,7 +27,7 @@ public class TranslationBox extends BorderPane {
 	private TextField fromTextField;
 	private TextField toTextField;
 	private Button deleteButton;
-	private TranslationImageButton imageButton;
+	private TranslationImageStack imageStack;
 
 	private HBox topBox;
 	private HBox mainBox;
@@ -47,12 +48,10 @@ public class TranslationBox extends BorderPane {
 		topBox = new HBox();
 		mainBox = new HBox();
 
-		setTop(topBox);
-		setCenter(mainBox);
-
 		initMainBox();
 		initTopBox();
 
+		getChildren().addAll(mainBox, deleteButton);
 	}
 
 	private void initMainBox() {
@@ -82,13 +81,13 @@ public class TranslationBox extends BorderPane {
 				updateTranslation();
 		});
 
-		imageButton = new TranslationImageButton(translationId, false);
+		imageStack = new TranslationImageStack(translationId);
 
 		Label seperator = new Label("\u2014");
 		seperator.getStyleClass().addAll("seperator");
 
-		mainBox.getChildren().addAll(Space.hBoxSpace(), fromTextField, Space.hBoxSpace(), seperator, Space.hBoxSpace(),
-				toTextField, Space.hBoxSpace(), imageButton);
+		mainBox.getChildren().addAll(imageStack, Space.hBoxSpace(), fromTextField, Space.hBoxSpace(), seperator,
+				Space.hBoxSpace(), toTextField, Space.hBoxSpace());
 
 	}
 
@@ -98,8 +97,8 @@ public class TranslationBox extends BorderPane {
 		deleteButton.setOnAction(event -> {
 			delete();
 		});
-		
-		topBox.getChildren().addAll(Space.hBoxSpace(), deleteButton);
+
+		StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
 
 	}
 
