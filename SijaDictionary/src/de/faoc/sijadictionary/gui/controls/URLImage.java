@@ -61,8 +61,11 @@ public class URLImage extends Image {
 				if (resetOnProgress)
 					resetTimer();
 			} else {
-				if(timer != null) timer.cancel();
-				status.set(URLImage.Status.SUCCESSFUL);
+				if (status.get() != URLImage.Status.UNSUCCESSFUL && !isTimedout()) {
+					if (timer != null)
+						timer.cancel();
+					status.set(URLImage.Status.SUCCESSFUL);
+				}
 			}
 		});
 
@@ -80,22 +83,22 @@ public class URLImage extends Image {
 		timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				instance.cancel();
-				timedout.set(true);
 				status.set(URLImage.Status.UNSUCCESSFUL);
+				timedout.set(true);
+				instance.cancel();
 			}
 		};
 		timer.schedule(timerTask, timeout);
 	}
-	
+
 	/*
 	 * GETTERS & SETTERS
 	 */
-	
+
 	public ReadOnlyBooleanProperty timedoutProperty() {
 		return timedout.getReadOnlyProperty();
 	}
-	
+
 	public ReadOnlyObjectProperty<URLImage.Status> statusProperty() {
 		return status.getReadOnlyProperty();
 	}
@@ -110,6 +113,10 @@ public class URLImage extends Image {
 
 	public boolean isResetOnProgress() {
 		return resetOnProgress;
+	}
+
+	public boolean isTimedout() {
+		return timedout.get();
 	}
 
 }

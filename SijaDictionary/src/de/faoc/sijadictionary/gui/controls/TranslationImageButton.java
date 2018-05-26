@@ -1,11 +1,6 @@
 package de.faoc.sijadictionary.gui.controls;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +8,7 @@ import java.util.Set;
 import de.faoc.sijadictionary.gui.controls.URLImage.Status;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.value.ChangeListener;
@@ -26,6 +22,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 public class TranslationImageButton extends Button {
@@ -36,6 +33,7 @@ public class TranslationImageButton extends Button {
 	private static final String IMAGE_SUFFIX = ".png";
 	private static final String IMAGE_FORMAT = "png";
 	private static final int IMAGE_SIZE = 380;
+	private static final long IMAGE_LOADING_TIMEOUT = 7000;
 
 	private int translationId;
 	private boolean previewMode;
@@ -43,6 +41,8 @@ public class TranslationImageButton extends Button {
 	private TranslationImageView imageView;
 
 	private NumberBinding maxBinding;
+
+	private final FileChooser fileChooser = new FileChooser();
 
 	public TranslationImageButton(int translationId, boolean previewMode) {
 		super();
@@ -54,6 +54,14 @@ public class TranslationImageButton extends Button {
 
 	private void init() {
 		getStyleClass().addAll("translation-image-button", "round");
+
+		fileChooser.setTitle("Choose Image");
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All Images", "*.*"),
+				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("PNG", "*.png"));
+		setOnAction(event -> {
+			openFile();
+		});
 
 		updateImage();
 
@@ -72,14 +80,26 @@ public class TranslationImageButton extends Button {
 		}
 	}
 
+	private void openFile() {
+		File file = fileChooser.showOpenDialog(getScene().getWindow());
+		if (file != null) {
+			Image selectedImage = ImageProcessor.getImageFromFile(file);
+			if (selectedImage != null) {
+				saveTranslationImage(selectedImage);
+				updateImage();
+			}
+		}
+	}
+
 	private void updateImage() {
 		imageView = new TranslationImageView(translationId);
-		maxBinding = Bindings.max(widthProperty(), heightProperty());
+		if (maxBinding == null)
+			maxBinding = Bindings.max(widthProperty(), heightProperty());
 		if (imageView.isPresent()) {
 			maxBinding.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
 				fitImage();
 			});
-
+			fitImage();
 		} else {
 			imageView.fitWidthProperty().bind(widthProperty().divide(SQRT_2));
 			imageView.fitHeightProperty().bind(heightProperty().divide(SQRT_2));
@@ -169,12 +189,10 @@ public class TranslationImageButton extends Button {
 	private void saveTranslationImage(Image image) {
 		File targetFile = Paths.get(IMAGE_ROOT + translationId + IMAGE_SUFFIX).toFile();
 		ImageProcessor.saveImageToFile(image, targetFile, IMAGE_SIZE, IMAGE_FORMAT);
-		
-		
 	}
 
 	private void loadImageFromUrl(String urlString) {
-		URLImage urlImage = ImageProcessor.getImageFromUrl(urlString, 7000, true);
+		URLImage urlImage = ImageProcessor.getImageFromUrl(urlString, IMAGE_LOADING_TIMEOUT, true);
 		if (urlImage != null) {
 			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
 			fadeTransition.setFromValue(0.8);
@@ -183,8 +201,7 @@ public class TranslationImageButton extends Button {
 			fadeTransition.setCycleCount(Animation.INDEFINITE);
 			fadeTransition.play();
 
-			ProgressIndicator progressIndicator = new ProgressIndicator(0);
-			progressIndicator.progressProperty().bind(urlImage.progressProperty());
+			ProgressIndicator progressIndicator = new ProgressIndicator(-1);
 
 			setGraphic(progressIndicator);
 
@@ -192,9 +209,11 @@ public class TranslationImageButton extends Button {
 				if (status == URLImage.Status.SUCCESSFUL) {
 					saveTranslationImage(urlImage);
 				}
-				fadeTransition.stop();
-				setOpacity(1);
-				updateImage();
+				Platform.runLater(() -> {
+					fadeTransition.stop();
+					setOpacity(1);
+					updateImage();
+				});
 			});
 		}
 	}
@@ -208,13 +227,8 @@ public class TranslationImageButton extends Button {
 				List<File> draggedFiles = dragboard.getFiles();
 				if (draggedFiles != null) {
 					for (File draggedFile : dragboard.getFiles()) {
-						// Try to parse file
-						try {
-							Image image = new Image(new BufferedInputStream(new FileInputStream(draggedFile)));
-							if (!image.isError())
-								return true;
-						} catch (FileNotFoundException e) {
-						}
+						if (ImageProcessor.isValidImageFile(draggedFile))
+							;
 					}
 				}
 			}
@@ -226,30 +240,16 @@ public class TranslationImageButton extends Button {
 				// Check if String has image file-ending
 				String draggedText = dragboard.getString();
 				if (draggedText != null && !draggedText.isEmpty()) {
-					if (draggedText.matches(IMAGE_ENDING_REGEX)) {
-						// Check if valid URL
-						try {
-							URL draggedURL = new URL(draggedText);
-							return true;
-						} catch (MalformedURLException e) {
-						}
-						// Check if file
-						File draggedFile = Paths.get(draggedText).toFile();
-						if (draggedFile != null && !draggedFile.isDirectory() && draggedFile.exists())
-							return true;
-					}
+					if (ImageProcessor.isValidImageUrl(draggedText) || ImageProcessor.isValidImageFile(draggedText))
+						return true;
 				}
 
 			}
 			if (dataFormat.equals(DataFormat.URL)) {
 				String draggedURLString = dragboard.getUrl();
 				if (draggedURLString != null) {
-					try {
-						URL draggedURL = new URL(draggedURLString);
-						if (draggedURLString.matches(IMAGE_ENDING_REGEX))
-							return true;
-					} catch (MalformedURLException e) {
-					}
+					if (ImageProcessor.isValidImageUrl(draggedURLString))
+						return true;
 				}
 			}
 		}
