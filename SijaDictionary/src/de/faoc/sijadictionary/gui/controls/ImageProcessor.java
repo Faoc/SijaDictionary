@@ -7,18 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.sun.net.httpserver.Authenticator.Success;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
 
 public class ImageProcessor {
 
@@ -93,8 +89,7 @@ public class ImageProcessor {
 
 	public static boolean isValidImageFile(String path) {
 		File file = Paths.get(path).toFile();
-		Image image = ImageProcessor.getImageFromFile(file);
-		return image != null;
+		return isValidImageFile(file);
 	}
 
 	public static boolean saveImageToFile(Image image, File file, int targetSize, String format) {
@@ -127,6 +122,11 @@ public class ImageProcessor {
 		}
 
 		return success;
+	}
+
+	public static boolean isValidImageFile(File file) {
+		Image image = ImageProcessor.getImageFromFile(file);
+		return image != null;
 	}
 
 }

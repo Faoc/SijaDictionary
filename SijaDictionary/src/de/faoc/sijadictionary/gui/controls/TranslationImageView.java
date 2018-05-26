@@ -49,15 +49,13 @@ public class TranslationImageView extends ImageView {
 			try {
 				image = new Image(new BufferedInputStream(new FileInputStream(imageFile)));
 				present = true;
+				return;
 			} catch (FileNotFoundException e) {
 				System.out.println("Couln't load image " + imagePath + "!");
 				e.printStackTrace();
-				image = Icons.getImage(Icons.IMAGE_IMAGE_PATH);
 			}
-		} else {
-			//Load default image
-			image = Icons.getImage(Icons.IMAGE_IMAGE_PATH);
 		}
+		image = Icons.getImage(Icons.IMAGE_IMAGE_PATH);
 		present = false;
 	}
 
