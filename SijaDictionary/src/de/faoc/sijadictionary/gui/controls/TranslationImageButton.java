@@ -28,11 +28,10 @@ import javafx.util.Duration;
 public class TranslationImageButton extends Button {
 
 	private static final double SQRT_2 = Math.sqrt(2);
-	private static final String IMAGE_ENDING_REGEX = "^(.+?)\\.(gif|jpe?g|tiff|png)$";
 	private static final String IMAGE_ROOT = "img/";
 	private static final String IMAGE_SUFFIX = ".png";
 	private static final String IMAGE_FORMAT = "png";
-	private static final int IMAGE_SIZE = 380;
+	private static final int IMAGE_SIZE = 400;
 	private static final long IMAGE_LOADING_TIMEOUT = 7000;
 
 	private int translationId;
@@ -191,7 +190,7 @@ public class TranslationImageButton extends Button {
 		ImageProcessor.saveImageToFile(image, targetFile, IMAGE_SIZE, IMAGE_FORMAT);
 	}
 
-	private void loadImageFromUrl(String urlString) {
+	public void loadImageFromUrl(String urlString) {
 		URLImage urlImage = ImageProcessor.getImageFromUrl(urlString, IMAGE_LOADING_TIMEOUT, true);
 		if (urlImage != null) {
 			FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), this);
@@ -254,6 +253,13 @@ public class TranslationImageButton extends Button {
 			}
 		}
 		return false;
+	}
+
+	public void deleteImage() {
+		File file = new File(IMAGE_ROOT + translationId + IMAGE_SUFFIX);
+		if (file.exists())
+			file.delete();
+		updateImage();
 	}
 
 }

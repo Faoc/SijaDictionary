@@ -197,6 +197,7 @@
 }
 
 .seperator {
+	
 }
 
 .translation-delete-button {
@@ -236,10 +237,41 @@
 	-fx-background-color: #ffc0c0;
 }
 
-.translation-image-button:drag > .img-view{
+.translation-image-button:drag>.img-view {
 	-fx-opacity: 0.5;
 }
 
 .translation-image-button:preview-mode:hover {
 	-fx-background-color: -sija-nested-element-color;
+}
+
+.translation-image-delete-button {
+	-fx-min-width: 27px;
+	-fx-min-height: 27px;
+	-fx-pref-width: 27px;
+	-fx-pref-height: 27px;
+	-fx-max-width: 27px;
+	-fx-max-height: 27px;
+	-fx-border-style: solid outside; -fx-border-width : 3px;
+	-fx-border-color: -sija-main-element-color;
+	-fx-border-width: 3px;
+}
+
+.translation-image-url-button {
+	-fx-min-width: 27px;
+	-fx-min-height: 27px;
+	-fx-pref-width: 27px;
+	-fx-pref-height: 27px;
+	-fx-max-width: 27px;
+	-fx-max-height: 27px;
+	-fx-border-style: solid outside;
+	-fx-border-width: 3px;
+	-fx-border-color: -sija-main-element-color;
+}
+
+.popup-box {
+	-fx-background-color: -sija-nested-element-color;
+	-fx-background-radius: 5;
+	-fx-padding: 2;
+	-fx-effect: dropshadow(gaussian, black, 10, 0, 0, 0);
 }
