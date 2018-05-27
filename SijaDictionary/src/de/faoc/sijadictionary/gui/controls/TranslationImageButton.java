@@ -227,7 +227,7 @@ public class TranslationImageButton extends Button {
 				if (draggedFiles != null) {
 					for (File draggedFile : dragboard.getFiles()) {
 						if (ImageProcessor.isValidImageFile(draggedFile))
-							;
+							return true;
 					}
 				}
 			}
