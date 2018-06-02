@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -59,6 +60,8 @@ public class TranslationBox extends StackPane {
 
 		fromTextField = new TextField(fromOrigin);
 		fromTextField.getStyleClass().add("translation-text");
+		fromTextField.setAlignment(Pos.CENTER_RIGHT);
+		HBox.setHgrow(fromTextField, Priority.ALWAYS);
 		fromTextField.setOnAction(event -> {
 			if (fromTextField.getText() != fromOrigin) {
 				updateTranslation();
@@ -71,6 +74,8 @@ public class TranslationBox extends StackPane {
 
 		toTextField = new TextField(toTranslation);
 		toTextField.getStyleClass().add("translation-text");
+		toTextField.setAlignment(Pos.CENTER_LEFT);
+		HBox.setHgrow(toTextField, Priority.ALWAYS);
 		toTextField.setOnAction(event -> {
 			if (toTextField.getText() != toTranslation) {
 				updateTranslation();
@@ -86,8 +91,7 @@ public class TranslationBox extends StackPane {
 		Label seperator = new Label("\u2014");
 		seperator.getStyleClass().addAll("seperator");
 
-		mainBox.getChildren().addAll(imageStack, Space.hBoxSpace(), fromTextField, Space.hBoxSpace(), seperator,
-				Space.hBoxSpace(), toTextField, Space.hBoxSpace());
+		mainBox.getChildren().addAll(imageStack, fromTextField, seperator, toTextField);
 
 	}
 

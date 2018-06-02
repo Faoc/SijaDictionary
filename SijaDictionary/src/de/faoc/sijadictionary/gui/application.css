@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Playball');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
+
 /* Define constants */
 .root {
 	-sija-background-color: white;
@@ -13,15 +16,11 @@
 	-sija-blue-button-hover-color: #62aed1;
 }
 
-/* Load external fonts 
- * @font-face {
- *     font-family: Delicious;
- *     src: url('Delicious-Roman.otf');
- * }
-
- * .root{
- * }
- */
+ .root{
+ 	-fx-font-family: 'Open Sans', sans-serif;
+ }
+ 
+ 
 /*
  * Main displays/containers
  */
@@ -57,6 +56,7 @@
 }
 
 .title {
+	-fx-font-family: 'Playball', cursive;
 	-fx-font-size: 30pt;
 }
 
@@ -180,16 +180,18 @@
 
 .translation-box {
 	-fx-background-color: -sija-main-element-color;
-	-fx-background-radius: 10;
+	-fx-background-radius: 100 15 15 100;
 	-fx-spacing: 5px;
 	-fx-padding: 5px;
 }
 
 .translation-text {
+	-fx-font-family: 'Playball';
+	-fx-font-size: 30;
 	-fx-text-box-border: transparent;
 	-fx-background-color: transparent;
 	-fx-background-insets: 0;
-	-fx-padding: 1 3 1 3;
+	-fx-padding: 1 10 1 10;
 }
 
 .translation-text :focused {
