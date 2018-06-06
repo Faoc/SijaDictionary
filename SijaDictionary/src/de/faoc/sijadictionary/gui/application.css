@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Playball');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 
 /* Define constants */
 .root {
@@ -17,7 +16,7 @@
 }
 
  .root{
- 	-fx-font-family: 'Open Sans', sans-serif;
+ 	
  }
  
  
@@ -230,6 +229,12 @@
 
 .translation-text :focused {
 	-fx-focus-color: transparent
+}
+
+.synonym-label {
+	-fx-text-fill: grey;
+	-fx-font-style: italic;
+	-fx-padding: 1 10 1 10;
 }
 
 .seperator {
