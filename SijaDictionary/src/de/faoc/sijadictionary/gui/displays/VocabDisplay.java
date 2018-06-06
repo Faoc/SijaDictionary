@@ -1,9 +1,6 @@
 package de.faoc.sijadictionary.gui.displays;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import de.faoc.sijadictionary.core.database.DataSet;
 import de.faoc.sijadictionary.core.database.DatabaseHelper;
@@ -12,12 +9,12 @@ import de.faoc.sijadictionary.core.database.DatabaseTables;
 import de.faoc.sijadictionary.gui.GuiApplicationController;
 import de.faoc.sijadictionary.gui.controls.Icons;
 import de.faoc.sijadictionary.gui.controls.TranslationBox;
-import de.faoc.sijadictionary.gui.controls.UnitBox;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
@@ -29,6 +26,8 @@ public class VocabDisplay extends Display<BorderPane> {
 	private Button addButton;
 	private Label title;
 	private VBox center;
+	private ScrollPane centerWrapper;
+	private boolean addedNewBox = false;
 
 	public VocabDisplay(int unitId, String unitName) {
 		super();
@@ -65,19 +64,36 @@ public class VocabDisplay extends Display<BorderPane> {
 
 		center = new VBox(10);
 		center.setAlignment(Pos.TOP_CENTER);
-		center.getChildren().addAll(populate());
+		populate();
 		BorderPane.setAlignment(center, Pos.TOP_CENTER);
 		BorderPane.setMargin(center, new Insets(10));
+		center.heightProperty().addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+			//If a new element was added scroll to bottom
+			if(addedNewBox) {
+				centerWrapper.setVvalue(1.0);
+				addedNewBox = false;
+			}
+		});
+		
+		//Wrap the center into a Scrollpane
+		centerWrapper = new ScrollPane(center);
+		centerWrapper.setFitToHeight(true);
+		centerWrapper.setFitToWidth(true);
 
 		getRoot().setTop(title);
-		getRoot().setCenter(center);
+		getRoot().setCenter(centerWrapper);
 		getRoot().setBottom(addButton);
 	}
 
 	private void addTranslation() {
-		GuiApplicationController controller = GuiApplicationController.getInstance();
-		DatabaseHelper.executeUpdate(DatabaseStatements.Insert.translation(unitId, "Origin", "Translation"));
-		reload();
+		int id = DatabaseHelper.executeInsertSingle(DatabaseStatements.Insert.translation(unitId, "Origin", "Translation"));
+		if(id != -1) {
+			addedNewBox = true;
+			TranslationBox newTranslationBox = addTranslationBox(id);
+			if(newTranslationBox != null) {
+				newTranslationBox.editTranslations();
+			}
+		}
 	}
 
 	public void reload() {
@@ -86,20 +102,38 @@ public class VocabDisplay extends Display<BorderPane> {
 		GuiApplicationController.getInstance().changeDisplay(vocabDisplay);
 	}
 
-	private List<Node> populate() {
+	private void populate() {
 		DataSet translations = DatabaseHelper.query(DatabaseStatements.Query.translation(unitId));
-		if (translations.isEmpty()) {
-			return Arrays.asList(new Label("No translations added"));
-		} else {
-			ArrayList<Node> translationBoxes = new ArrayList<>();
+		if (!translations.isEmpty()) {
 			for (HashMap<String, Object> translation : translations) {
 				int id = (int) translation.get(DatabaseTables.Translation.ID);
 				String origin = (String) translation.get(DatabaseTables.Translation.ORIGIN);
 				String toTranslation = (String) translation.get(DatabaseTables.Translation.TRANSLATION);
-				translationBoxes.add(new TranslationBox(this, id, origin, toTranslation));
+				addTranslationBox(id, origin, toTranslation);
 			}
-			return translationBoxes;
 		}
+	}
+	
+	private TranslationBox addTranslationBox(int id, String origin, String toTranslation) {
+		TranslationBox translationBox = new TranslationBox(this, id, origin, toTranslation);
+		center.getChildren().add(translationBox);
+		return translationBox;
+	}
+	
+	private TranslationBox addTranslationBox(int translationId) {
+		//Get data from id
+		DataSet translationData = DatabaseHelper.query(DatabaseStatements.Query.translationById(translationId));
+		if(!translationData.isEmpty()) {
+			HashMap<String, Object> translation = translationData.get(0);
+			String origin = (String) translation.get(DatabaseTables.Translation.ORIGIN);
+			String toTranslation = (String) translation.get(DatabaseTables.Translation.TRANSLATION);
+			return addTranslationBox(translationId, origin, toTranslation);
+		}
+		return null;
+	}
+
+	public void removeBox(TranslationBox translationBox) {
+		center.getChildren().remove(translationBox);
 	}
 
 }

@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.faoc.sijadictionary.Main;
 import de.faoc.sijadictionary.gui.controls.LanguageChooser;
@@ -63,9 +65,9 @@ public class DatabaseHelper {
 			while ((statementLine = input.readLine()) != null) {
 				statementStrings += statementLine;
 			}
-			
+
 			// Split statements and execute
-			for(String statementString : statementStrings.split(";")) {
+			for (String statementString : statementStrings.split(";")) {
 				Statement stmt = getConnection().createStatement();
 				stmt.executeUpdate(statementStrings);
 				stmt.close();
@@ -112,6 +114,47 @@ public class DatabaseHelper {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * Executes a given insert statement. Returns a List of all generated ID's
+	 * @param sql The SQL INSERT-Statement to execute
+	 * @return A List of all inserted ID's or null if an error occured, no data was inserted or no ID was generated
+	 */
+	public static List<Integer> executeInsert(String sql) {
+		try {
+			Statement stmt = getConnection().createStatement();
+			int affectedRows = stmt.executeUpdate(sql);
+
+			// Get the generated key
+			if (affectedRows > 0) {
+				List<Integer> generatedIds = new ArrayList<>();
+				ResultSet generatedKeys = stmt.getGeneratedKeys();
+				while(generatedKeys.next()) {
+					generatedIds.add(generatedKeys.getInt(1));
+				}
+				if(!generatedIds.isEmpty()) return generatedIds;
+			}
+
+			return null;
+		} catch (SQLException e) {
+			System.out.println("Error executing statement: " + sql);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Executes a given insert statement. Return one of the generated ID's (if multiple)
+	 * @param sql The SQL INSERT-Statement to execute
+	 * @return One of the inserted ID's (if multiple) or -1 on error, id no data was inserted or no ID was generated
+	 */
+	public static int executeInsertSingle(String sql) {
+		List<Integer> ids = executeInsert(sql);
+		if(ids != null && !ids.isEmpty()) {
+			return ids.get(0);
+		}
+		return -1;
 	}
 
 	public static DataSet query(String sql) {

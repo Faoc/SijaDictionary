@@ -5,18 +5,13 @@ import de.faoc.sijadictionary.core.database.DatabaseStatements;
 import de.faoc.sijadictionary.gui.displays.VocabDisplay;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 public class TranslationBox extends StackPane {
 
@@ -31,7 +26,6 @@ public class TranslationBox extends StackPane {
 	private Button deleteButton;
 	private TranslationImageStack imageStack;
 
-	private HBox topBox;
 	private HBox mainBox;
 
 	public TranslationBox(VocabDisplay vocabDisplay, int translationId, String fromOrigin, String toTranslation) {
@@ -47,7 +41,6 @@ public class TranslationBox extends StackPane {
 	private void init() {
 		getStyleClass().addAll("translation-box");
 
-		topBox = new HBox();
 		mainBox = new HBox();
 
 		initMainBox();
@@ -116,14 +109,15 @@ public class TranslationBox extends StackPane {
 	}
 
 	private void delete() {
-		DatabaseHelper.executeUpdate(DatabaseStatements.Delete.translation(translationId));
-		vocabDisplay.reload();
+		if(DatabaseHelper.executeUpdate(DatabaseStatements.Delete.translation(translationId))) {
+			vocabDisplay.removeBox(this);
+		}
+		
 	}
 
 	private void updateTranslation() {
 		DatabaseHelper.executeUpdate(
 				DatabaseStatements.Update.translation(translationId, fromTextField.getText(), toTextField.getText()));
-		//vocabDisplay.reload();
 	}
 	
 	private void clearFocus() {
