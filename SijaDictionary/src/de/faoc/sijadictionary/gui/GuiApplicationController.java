@@ -6,6 +6,7 @@ import de.faoc.sijadictionary.gui.displays.MainDisplay;
 import de.faoc.sijadictionary.gui.displays.UnitDisplay;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
@@ -17,17 +18,15 @@ public class GuiApplicationController {
 	private HeaderBar headerBar;
 	private MainDisplay mainDisplay;
 	
+	@FXML
+	private BorderPane mainContainer;
+	
     @FXML
     private HBox top;
-
-    @FXML
-    private ScrollPane center;
     
     @FXML
     public void initialize() {
     	instance = this;
-    	
-    	center.getStyleClass().addAll("main-container");
     	
     	headerToolbar();
     	mainDisplay = new MainDisplay();
@@ -58,7 +57,7 @@ public class GuiApplicationController {
 	}
 
 	public void changeDisplay(Display display) {
-		center.setContent(display.getRoot());
+		mainContainer.setCenter(display.getRoot());
 		currentDiplay = display;
 	}
 

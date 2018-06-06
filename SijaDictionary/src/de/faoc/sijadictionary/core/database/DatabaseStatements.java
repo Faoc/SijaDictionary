@@ -23,6 +23,10 @@ public class DatabaseStatements {
 		public static String translation(int unitId) {
 			return String.format("SELECT * FROM %s WHERE %s = %d;", Translation.TABLE_NAME, Translation.UNIT, unitId);
 		}
+		
+		public static String translationById(int translationId) {
+			return String.format("SELECT * FROM %s WHERE %s = %d;", Translation.TABLE_NAME, Translation.ID, translationId);
+		}
 	}
 
 	public static class Insert {
