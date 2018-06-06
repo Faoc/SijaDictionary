@@ -3,6 +3,7 @@ package de.faoc.sijadictionary.gui.controls;
 import de.faoc.sijadictionary.core.database.DatabaseHelper;
 import de.faoc.sijadictionary.core.database.DatabaseStatements;
 import de.faoc.sijadictionary.gui.displays.VocabDisplay;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -66,10 +67,14 @@ public class TranslationBox extends StackPane {
 			if (fromTextField.getText() != fromOrigin) {
 				updateTranslation();
 			}
+			toTextField.requestFocus();
 		});
 		fromTextField.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (!newValue && fromTextField.getText() != fromOrigin)
 				updateTranslation();
+			else if (newValue) {
+				Platform.runLater(() -> fromTextField.selectAll());
+			}
 		});
 
 		toTextField = new TextField(toTranslation);
@@ -80,10 +85,14 @@ public class TranslationBox extends StackPane {
 			if (toTextField.getText() != toTranslation) {
 				updateTranslation();
 			}
+			clearFocus();
 		});
 		toTextField.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (!newValue && toTextField.getText() != toTranslation)
 				updateTranslation();
+			else if (newValue) {
+				Platform.runLater(() -> toTextField.selectAll());
+			}
 		});
 
 		imageStack = new TranslationImageStack(translationId);
@@ -114,7 +123,15 @@ public class TranslationBox extends StackPane {
 	private void updateTranslation() {
 		DatabaseHelper.executeUpdate(
 				DatabaseStatements.Update.translation(translationId, fromTextField.getText(), toTextField.getText()));
-		vocabDisplay.reload();
+		//vocabDisplay.reload();
+	}
+	
+	private void clearFocus() {
+		this.requestFocus();
+	}
+	
+	public void editTranslations() {
+		fromTextField.requestFocus();
 	}
 
 }
