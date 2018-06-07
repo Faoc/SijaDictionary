@@ -14,6 +14,8 @@ public class Icons {
 	public static final String BACK_IMAGE_PATH = "/images/back.png";
 	public static final String IMAGE_IMAGE_PATH = "/images/image.png";
 	public static final String LINK_IMAGE_PATH = "/images/link.png";
+	public static final String EXPORT_IMAGE_PATH = "/images/export.png";
+	public static final String IMPORT_IMAGE_PATH = "/images/import.png";
 	
 	
 	public static Image getImage(String path) {

@@ -5,6 +5,7 @@ import de.faoc.sijadictionary.core.database.DatabaseStatements;
 import de.faoc.sijadictionary.gui.GuiApplicationController;
 import de.faoc.sijadictionary.gui.displays.UnitDisplay;
 import de.faoc.sijadictionary.gui.displays.VocabDisplay;
+import de.faoc.sijadictionary.gui.util.importer.SimpleFormatGuiImporter;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,6 +22,8 @@ public class UnitBox extends HBox {
 	private TextField nameField;
 	private Button editButton;
 	private Button deleteButton;
+	private Button importButton;
+	private Button exportButton;
 
 	public UnitBox(int id, String name, UnitDisplay unitDisplay) {
 		super();
@@ -52,6 +55,18 @@ public class UnitBox extends HBox {
 			if (!newValue && nameField.getText() != name)
 				updateUnit();
 		});
+		
+		exportButton = Icons.getIconButton(Icons.EXPORT_IMAGE_PATH, 4);
+		exportButton.getStyleClass().addAll("export-button", "green-button");
+		exportButton.setOnAction(event -> {
+			exportUnit();
+		});
+		
+		importButton = Icons.getIconButton(Icons.IMPORT_IMAGE_PATH, 4);
+		importButton.getStyleClass().addAll("import-button", "green-button");
+		importButton.setOnAction(event -> {
+			importUnit();
+		});
 
 		editButton = Icons.getIconButton(Icons.EDIT_IMAGE_PATH, 4);
 		editButton.getStyleClass().addAll("unit-edit-button", "blue-button");
@@ -66,7 +81,16 @@ public class UnitBox extends HBox {
 			deleteUnit();
 		});
 
-		getChildren().addAll(nameField, Space.hBoxSpace(), editButton, deleteButton);
+		getChildren().addAll(nameField, Space.hBoxSpace(), exportButton, importButton, editButton, deleteButton);
+	}
+
+	private void importUnit() {
+		SimpleFormatGuiImporter importer = new SimpleFormatGuiImporter(getScene().getWindow());
+		importer.importFromFile(unitId);
+	}
+
+	private void exportUnit() {
+		
 	}
 
 	private void deleteUnit() {

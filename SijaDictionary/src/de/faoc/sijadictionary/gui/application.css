@@ -16,11 +16,9 @@
 	-sija-blue-button-hover-color: #62aed1;
 }
 
- .root{
- 	-fx-font-family: 'Open Sans', sans-serif;
- }
- 
- 
+.root {
+	
+}
 /*
  * Main displays/containers
  */
@@ -63,35 +61,32 @@
 /*
  * ScrollPane and ScrollBar design
  */
-
-.scroll-pane, .scroll-pane > .viewport {
-   -fx-background-color: transparent;
+.scroll-pane, .scroll-pane>.viewport {
+	-fx-background-color: transparent;
 }
 
-.scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color:transparent;
+.scroll-bar:horizontal, .scroll-bar:vertical {
+	-fx-background-color: transparent;
 }
 
 .increment-button, .decrement-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
 }
 
-.scroll-bar:horizontal .track,
-.scroll-bar:vertical .track{
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-background-radius: 0;
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+	-fx-background-radius: 0;
 }
 
-.scroll-bar:horizontal .thumb,
-.scroll-bar:vertical .thumb {
-    -fx-background-color: -sija-main-element-color;
-    -fx-background-radius: 10;
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+	-fx-background-color: -sija-main-element-color;
+	-fx-background-radius: 10;
 }
 
-.scroll-pane > .corner {
-    -fx-background-color: transparent;
+.scroll-pane>.corner {
+	-fx-background-color: transparent;
 }
 
 /*
@@ -141,6 +136,24 @@
 
 .unit-box:hover {
 	-fx-background-color: -sija-main-hover-color;
+}
+
+.export-button {
+	-fx-min-width: 30px;
+	-fx-min-height: 30;
+	-fx-pref-width: 30px;
+	-fx-pref-height: 30px;
+	-fx-max-width: 30px;
+	-fx-max-height: 30px;
+}
+
+.import-button {
+	-fx-min-width: 30px;
+	-fx-min-height: 30;
+	-fx-pref-width: 30px;
+	-fx-pref-height: 30px;
+	-fx-max-width: 30px;
+	-fx-max-height: 30px;
 }
 
 .unit-edit-button {
@@ -288,7 +301,8 @@
 	-fx-pref-height: 27px;
 	-fx-max-width: 27px;
 	-fx-max-height: 27px;
-	-fx-border-style: solid outside; -fx-border-width : 3px;
+	-fx-border-style: solid outside;
+	-fx-border-width: 3px;
 	-fx-border-color: -sija-main-element-color;
 	-fx-border-width: 3px;
 }
