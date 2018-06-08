@@ -34,4 +34,9 @@ public class SimpleFormatGuiImporter extends BasicGuiImporter {
 		return translations;
 	}
 
+	@Override
+	public String formatName() {
+		return "Simple Format";
+	}
+
 }
