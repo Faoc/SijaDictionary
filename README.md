@@ -1,5 +1,10 @@
+<div class="alert alert-success">
+This project exists as part of educational work and is not (yet) properly documented/commented!
+</div>
+
 # SijaDictionary
 A Java(FX)-based dictionary with vocabulary-trainer functionality
+
 ## License
 Copyright 2018 Fabian Ochmann
 
