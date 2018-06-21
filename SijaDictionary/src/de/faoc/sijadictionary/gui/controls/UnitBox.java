@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 
@@ -123,6 +124,7 @@ public class UnitBox extends HBox {
 		for (GuiExporter exporter : exporters) {
 			Button button = new Button(exporter.formatName());
 			button.getStyleClass().addAll("export-format-button", "white-button");
+			button.setMaxWidth(Double.MAX_VALUE);
 			button.setOnAction(event -> {
 				exporter.exportToFile(unitId);
 			});
@@ -152,6 +154,7 @@ public class UnitBox extends HBox {
 		for (GuiImporter importer : importers) {
 			Button button = new Button(importer.formatName());
 			button.getStyleClass().addAll("import-format-button", "white-button");
+			button.setMaxWidth(Double.MAX_VALUE);
 			button.setOnAction(event -> {
 				importer.importFromFile(unitId);
 			});
