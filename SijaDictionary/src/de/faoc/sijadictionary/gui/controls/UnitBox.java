@@ -9,8 +9,10 @@ import de.faoc.sijadictionary.core.database.DatabaseStatements;
 import de.faoc.sijadictionary.gui.GuiApplicationController;
 import de.faoc.sijadictionary.gui.displays.UnitDisplay;
 import de.faoc.sijadictionary.gui.displays.VocabDisplay;
+import de.faoc.sijadictionary.gui.util.exporter.CsvGuiExporter;
 import de.faoc.sijadictionary.gui.util.exporter.GuiExporter;
 import de.faoc.sijadictionary.gui.util.exporter.SimpleFormatGuiExporter;
+import de.faoc.sijadictionary.gui.util.importer.CsvGuiImporter;
 import de.faoc.sijadictionary.gui.util.importer.GuiImporter;
 import de.faoc.sijadictionary.gui.util.importer.SimpleFormatGuiImporter;
 import javafx.beans.value.ChangeListener;
@@ -56,7 +58,7 @@ public class UnitBox extends HBox {
 	private void init() {
 		getStyleClass().addAll("unit-box", "clickable");
 		setAlignment(Pos.CENTER_LEFT);
-		
+
 		this.setOnMouseClicked(event -> {
 			VocabDisplay vocabDisplay = new VocabDisplay(unitId, name);
 			vocabDisplay.setPreviousDisplay(unitDisplay);
@@ -74,23 +76,23 @@ public class UnitBox extends HBox {
 			if (!newValue && nameField.getText() != name)
 				updateUnit();
 		});
-		
-		//Export
+
+		// Export
 		exportPopup = new Popup();
 		exportPopup.setAutoHide(true);
 		exportPopup.setAutoFix(true);
-		
+
 		exportButton = Icons.getIconButton(Icons.EXPORT_IMAGE_PATH, 4);
 		exportButton.getStyleClass().addAll("export-button", "green-button");
 		exportButton.setOnAction(event -> {
 			exportUnit();
 		});
-		
-		//Import
+
+		// Import
 		importPopup = new Popup();
 		importPopup.setAutoHide(true);
 		importPopup.setAutoFix(true);
-		
+
 		importButton = Icons.getIconButton(Icons.IMPORT_IMAGE_PATH, 4);
 		importButton.getStyleClass().addAll("import-button", "green-button");
 		importButton.setOnAction(event -> {
@@ -114,8 +116,11 @@ public class UnitBox extends HBox {
 	}
 
 	private void addExportFormatButtons(VBox exportPopupBox) {
-		List<GuiExporter> exporters = Arrays.asList(new SimpleFormatGuiExporter(getScene().getWindow()));
-		for(GuiExporter exporter : exporters) {
+		List<GuiExporter> exporters = Arrays.asList(
+				new SimpleFormatGuiExporter(getScene().getWindow()),
+				new CsvGuiExporter(getScene().getWindow())
+		);
+		for (GuiExporter exporter : exporters) {
 			Button button = new Button(exporter.formatName());
 			button.getStyleClass().addAll("export-format-button", "white-button");
 			button.setOnAction(event -> {
@@ -126,7 +131,7 @@ public class UnitBox extends HBox {
 	}
 
 	private void importUnit() {
-		if(importPopupBox == null) {
+		if (importPopupBox == null) {
 			importPopupBox = new VBox(5, new Label("Choose format:"));
 			importPopupBox.getStyleClass().addAll("import-popup-box", "popup-box");
 			addImportFormatButtons(importPopupBox);
@@ -140,8 +145,11 @@ public class UnitBox extends HBox {
 	}
 
 	private void addImportFormatButtons(VBox importPopupBox) {
-		List<GuiImporter> importers = Arrays.asList(new SimpleFormatGuiImporter(getScene().getWindow()));
-		for(GuiImporter importer : importers) {
+		List<GuiImporter> importers = Arrays.asList(
+				new SimpleFormatGuiImporter(getScene().getWindow()),
+				new CsvGuiImporter(getScene().getWindow())
+		);
+		for (GuiImporter importer : importers) {
 			Button button = new Button(importer.formatName());
 			button.getStyleClass().addAll("import-format-button", "white-button");
 			button.setOnAction(event -> {
@@ -152,7 +160,7 @@ public class UnitBox extends HBox {
 	}
 
 	private void exportUnit() {
-		if(exportPopupBox == null) {
+		if (exportPopupBox == null) {
 			exportPopupBox = new VBox(5, new Label("Choose format:"));
 			exportPopupBox.getStyleClass().addAll("export-popup-box", "popup-box");
 			addExportFormatButtons(exportPopupBox);
