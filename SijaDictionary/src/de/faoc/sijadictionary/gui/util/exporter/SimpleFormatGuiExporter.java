@@ -18,7 +18,7 @@ public class SimpleFormatGuiExporter extends BasicGuiExporter {
 	protected String formatTranslation(Translation translation) {
 		if(translation == null) return null;
 		
-		return String.format("%s ;; %s", translation.getOrigin(), translation.getTranslation());
+		return String.format("%s;;%s", translation.getOrigin(), translation.getTranslation());
 	}
 
 	@Override
