@@ -21,4 +21,9 @@ public class CsvGuiExporter extends BasicGuiExporter {
 		return String.format("\"%s\",\"%s\"", translation.getOrigin(), translation.getTranslation());
 	}
 
+	@Override
+	protected String getFileExtension() {
+		return "csv";
+	}
+
 }

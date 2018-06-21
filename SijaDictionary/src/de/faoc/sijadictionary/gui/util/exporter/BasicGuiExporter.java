@@ -29,8 +29,10 @@ public abstract class BasicGuiExporter implements GuiExporter {
 		fileChooser = new FileChooser();
 		fileChooser.setTitle("Choose Image");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		fileChooser.setInitialFileName("export.sija");
+		fileChooser.setInitialFileName("export." + getFileExtension());
 	}
+
+	protected abstract String getFileExtension();
 
 	@Override
 	public boolean exportToFile(int unitId, File file) {
