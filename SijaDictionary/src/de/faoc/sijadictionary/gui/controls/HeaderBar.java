@@ -1,5 +1,6 @@
 package de.faoc.sijadictionary.gui.controls;
 
+import de.faoc.sijadictionary.gui.util.exporter.FullExporter;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +23,9 @@ public class HeaderBar extends HBox {
 	private Button backButton;
 	private LanguageChooser fromLangChooser;
 	private LanguageChooser toLangChooser;
+	
+	private Button exportButton;
+	private Button importButton;
 
 	public HeaderBar() {
 		super();
@@ -53,7 +57,27 @@ public class HeaderBar extends HBox {
 		fromLangChooser.setValue(LanguageChooser.DEFAULT_FROM_LANG);
 		toLangChooser.setValue(LanguageChooser.DEFAULT_TO_LANG);
 		
-		getChildren().addAll(backButton, Space.hBoxSpace(), fromLangChooser, toLangChooser);
+		importButton = Icons.getIconButton(Icons.IMPORT_IMAGE_PATH, 4);
+		importButton.getStyleClass().addAll("import-button", "green-button");
+		importButton.setOnAction(event -> {
+			importClicked();
+		});
+		
+		exportButton = Icons.getIconButton(Icons.EXPORT_IMAGE_PATH, 4);
+		exportButton.getStyleClass().addAll("export-button", "green-button");
+		exportButton.setOnAction(event -> {
+			exportClicked();
+		});
+		
+		
+		getChildren().addAll(backButton, Space.hBoxSpace(), importButton, exportButton, fromLangChooser, toLangChooser);
+	}
+
+	private void exportClicked() {
+		FullExporter.export(getScene().getWindow());
+	}
+
+	private void importClicked() {
 	}
 
 	private void initProperties() {
