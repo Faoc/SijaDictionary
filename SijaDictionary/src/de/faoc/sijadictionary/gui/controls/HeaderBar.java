@@ -1,6 +1,9 @@
 package de.faoc.sijadictionary.gui.controls;
 
+import de.faoc.sijadictionary.gui.GuiApplication;
+import de.faoc.sijadictionary.gui.GuiApplicationController;
 import de.faoc.sijadictionary.gui.util.exporter.FullExporter;
+import de.faoc.sijadictionary.gui.util.importer.FullImporter;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
@@ -74,10 +77,12 @@ public class HeaderBar extends HBox {
 	}
 
 	private void exportClicked() {
-		FullExporter.export(getScene().getWindow());
+		FullExporter.exportData(getScene().getWindow());
 	}
 
 	private void importClicked() {
+	    FullImporter.importData(getScene().getWindow());
+	    GuiApplicationController.getInstance().setMainDisplay();
 	}
 
 	private void initProperties() {

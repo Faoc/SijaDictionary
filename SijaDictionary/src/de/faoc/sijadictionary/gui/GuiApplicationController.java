@@ -81,4 +81,7 @@ public class GuiApplicationController {
 		return headerBar.toLangProperty().get();
 	}
 	
+	public void setMainDisplay() {
+	    changeDisplay(mainDisplay);
+	}
 }
