@@ -28,7 +28,7 @@ public class FullExporter {
 		return fileChooser;
 	}
 
-	public static boolean export(Window window) {
+	public static boolean exportData(Window window) {
 		File targetFile = getFileChooser().showSaveDialog(window);
 		if (targetFile != null) {
 			ZipOutputStream out = null;
